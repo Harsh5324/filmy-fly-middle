@@ -8,6 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(async (req, resp) => {
   try {
     const { referer } = req.headers;
+    console.log("🚀 ~ file: index.js:11 ~ app.use ~ referer:", referer);
 
     if (!referer)
       return resp.send(`
@@ -47,7 +48,10 @@ app.use(async (req, resp) => {
 
     resp.status(nginxResponse.status).send(nginxResponse.data);
   } catch (error) {
-    console.log("🚀 ~ file: index.js:50 ~ app.use ~ error:", error);
+    console.log(
+      "🚀 ~ file: index.js:50 ~ app.use ~ error:",
+      error?.message || error
+    );
     resp.status(500).send("Internal Server Error");
   }
 });
