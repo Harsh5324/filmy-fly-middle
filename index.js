@@ -1,7 +1,5 @@
-const fs = require("fs");
 const express = require("express");
 const axios = require("axios");
-const path = require("path");
 const app = express();
 
 app.use(express.json());
@@ -49,6 +47,7 @@ app.use(async (req, resp) => {
 
     resp.status(nginxResponse.status).send(nginxResponse.data);
   } catch (error) {
+    console.log("🚀 ~ file: index.js:50 ~ app.use ~ error:", error);
     resp.status(500).send("Internal Server Error");
   }
 });
