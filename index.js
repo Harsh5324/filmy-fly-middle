@@ -20,53 +20,58 @@ const isValidIP = (ip) => {
 };
 
 app.use(async (req, res, next) => {
-  const ip =
-    req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
-
-  if (!isValidIP(ip) || req.url.split("").length > 70)
-    return res.send("Internal Server Error");
-
-  // const logData = {
-  //   ip,
-  //   method: req.method,
-  //   url: req.url,
-  //   headers: req.headers,
-  //   body: req.body,
-  //   timestamp: new Date().toString(),
-  // };
-
-  // let logs = [],
-  //   ips = {};
-
-  // if (fs.existsSync(LOG_FILE)) {
-  //   const data = fs.readFileSync(LOG_FILE, "utf-8");
-  //   logs = JSON.parse(data);
-  // }
-
-  // if (fs.existsSync(IPS_FILE)) {
-  //   const data = fs.readFileSync(IPS_FILE, "utf-8");
-  //   ips = JSON.parse(data);
-  // }
-
-  // ips[ip] = (ips[ip] || 0) + 1;
-
-  // logs.push(logData);
-
-  // fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
-  // fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
-
   try {
-    const nginxResponse = await axios({
-      method: req.method,
-      url: `http://127.0.0.1:81${req.url}`,
-      headers: req.headers,
-      data: req.body,
-    });
+    const ip =
+      req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-    res.status(nginxResponse.status).send(nginxResponse.data);
-  } catch (error) {
-    console.log("Error forwarding request to Nginx:", error.message, req.url);
-    res.status(500).send("Error forwarding request to Nginx");
+    if (!isValidIP(ip) || req.url.split("").length > 70)
+      return res.send("Internal Server Error");
+
+    // const logData = {
+    //   ip,
+    //   method: req.method,
+    //   url: req.url,
+    //   headers: req.headers,
+    //   body: req.body,
+    //   timestamp: new Date().toString(),
+    // };
+
+    // let logs = [],
+    //   ips = {};
+
+    // if (fs.existsSync(LOG_FILE)) {
+    //   const data = fs.readFileSync(LOG_FILE, "utf-8");
+    //   logs = JSON.parse(data);
+    // }
+
+    // if (fs.existsSync(IPS_FILE)) {
+    //   const data = fs.readFileSync(IPS_FILE, "utf-8");
+    //   ips = JSON.parse(data);
+    // }
+
+    // ips[ip] = (ips[ip] || 0) + 1;
+
+    // logs.push(logData);
+
+    // fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
+    // fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
+
+    try {
+      const nginxResponse = await axios({
+        method: req.method,
+        url: `http://127.0.0.1:81${req.url}`,
+        headers: req.headers,
+        data: req.body,
+      });
+
+      res.status(nginxResponse.status).send(nginxResponse.data);
+    } catch (error) {
+      console.log("Error forwarding request to Nginx:", error.message, req.url);
+      res.status(500).send("Error forwarding request to Nginx");
+    }
+  } catch (err) {
+    console.error("Error processing request:", err.message);
+    res.send("Something went wrong");
   }
 });
 
