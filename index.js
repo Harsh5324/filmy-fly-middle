@@ -26,6 +26,21 @@ app.use(async (req, res, next) => {
 
     // if (ip != "103.161.98.228") return res.send("Site under maintenance");
 
+    const cats = [
+      "bollywood-movies",
+      "hollywood-movies-in-english",
+      "south-indian-hindi-dubbed-movies",
+      "punjabi-movies",
+      "animation-movies",
+      "web-series",
+    ];
+
+    if (
+      req.url.lastIndexOf("cat-page") &&
+      !cats.includes(req.url.match(/\/cat-page\/(.*)\.html/)?.[1])
+    )
+      return res.send("Invalid activity");
+
     if (
       !isValidIP(ip) ||
       req.url.split("").length > 70 ||
