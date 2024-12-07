@@ -24,9 +24,13 @@ app.use(async (req, res, next) => {
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-    if (ip != "103.161.98.228") return res.send("Site under maintenance");
+    // if (ip != "103.161.98.228") return res.send("Site under maintenance");
 
-    if (!isValidIP(ip) || req.url.split("").length > 70) {
+    if (
+      !isValidIP(ip) ||
+      req.url.split("").length > 70 ||
+      ip == '2001:16a2:f99d:3a00:2176:89ae:129f:c7d2"'
+    ) {
       return res.send("Internal Server Error");
     }
 
