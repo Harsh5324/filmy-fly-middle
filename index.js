@@ -51,7 +51,7 @@ app.use(async (req, res, next) => {
       return res.send("Internal Server Error");
     }
 
-    console.log("success", { ip, url: req.url, headers: req.headers });
+    console.log("success", { ip, url: req.url });
 
     const logData = {
       ip,
