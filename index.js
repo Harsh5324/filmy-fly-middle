@@ -10,8 +10,19 @@ const IPS_FILE = path.join(__dirname, "files", "ips.txt");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const isValidIPv4 = (ip) => {
+  const ipv4Regex =
+    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])$/;
+
+  return ipv4Regex.test(ip);
+};
+
 app.use(async (req, res, next) => {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+  if (!isValidIPv4(ip) || req.url.split("-").length > 12)
+    return res.send("Internal Server Error");
+
   const logData = {
     ip,
     method: req.method,
