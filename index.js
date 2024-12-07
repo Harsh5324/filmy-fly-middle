@@ -24,8 +24,12 @@ app.use(async (req, res, next) => {
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-    if (!isValidIP(ip) || req.url.split("").length > 70)
+    if (!isValidIP(ip) || req.url.split("").length > 70) {
+      console.log("failt", { ip, url: req.url });
       return res.send("Internal Server Error");
+    }
+
+    console.log("success", { ip, url: req.url });
 
     // const logData = {
     //   ip,
