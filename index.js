@@ -10,24 +10,19 @@ const IPS_FILE = path.join(__dirname, "files", "ips.txt");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const isValidIPv4 = (ip) => {
+const isValidIP = (ip) => {
   const ipv4Regex =
     /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])$/;
-
-  return ipv4Regex.test(ip);
-};
-
-const isValidIPv6 = (ip) => {
   const ipv6Regex =
     /^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,7}:$|^:(?::[a-fA-F0-9]{1,4}){1,7}$|^(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}$|^(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}$|^(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}$|^[a-fA-F0-9]{1,4}:((?::[a-fA-F0-9]{1,4}){1,6}|:)$|^(?::((:[a-fA-F0-9]{1,4}){1,7}|:))$/;
 
-  return ipv6Regex.test(ip);
+  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 };
 
 app.use(async (req, res, next) => {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-  if ((!isValidIPv4(ip) && !isValidIPv6(ip)) || req.url.split("").length > 70)
+  if (!isValidIP(ip) || req.url.split("").length > 70)
     return res.send("Internal Server Error");
 
   const logData = {
