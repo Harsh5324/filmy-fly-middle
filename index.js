@@ -9,7 +9,7 @@ app.use(async (req, resp) => {
   try {
     const { referer } = req.headers;
 
-    if (referer) console.log(referer);
+    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
     if (!referer)
       return resp.send(`
@@ -35,7 +35,7 @@ app.use(async (req, resp) => {
     </style>
   </head>
   <body>
-    <iframe src="${referer}"></iframe>
+    <iframe src="${fullUrl}"></iframe>
   </body>
 </html>
     `);
