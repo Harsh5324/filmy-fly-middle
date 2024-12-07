@@ -30,7 +30,7 @@ app.use(async (req, res, next) => {
       !isValidIP(ip) ||
       req.url.split("").length > 70 ||
       ip == "2001:16a2:f99d:3a00:2176:89ae:129f:c7d2" ||
-      req.url.split("/").length > 5
+      req.url.split("/").length >= 4
     ) {
       return res.send("Internal Server Error");
     }
