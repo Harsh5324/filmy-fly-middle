@@ -8,7 +8,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(async (req, resp) => {
   try {
     const { referer } = req.headers;
-    console.log("🚀 ~ file: index.js:11 ~ app.use ~ referer:", referer);
+
+    if (referer) console.log(referer);
 
     if (!referer)
       return resp.send(`
