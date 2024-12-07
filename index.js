@@ -20,8 +20,7 @@ const isValidIPv4 = (ip) => {
 app.use(async (req, res, next) => {
   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-  if (!isValidIPv4(ip) || req.url.split("-").length > 12)
-    return res.send("Internal Server Error");
+  if (req.url.split("-").length > 8) return res.send("Internal Server Error");
 
   const logData = {
     ip,
