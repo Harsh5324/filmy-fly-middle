@@ -11,6 +11,11 @@ app.use(async (req, resp) => {
 
     const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
+    const ip =
+      req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
+
+    console.log({ ip });
+
     if (!referer)
       return resp.send(`
     <!DOCTYPE html>
