@@ -38,7 +38,7 @@ app.use(async (req, res, next) => {
     if (
       (req.url.includes("cat-page") &&
         !cats.includes(req.url.match(/\/cat-page\/(.*)\.html/)?.[1])) ||
-      req.headers.cookie.includes("sc_is_visitor_unique")
+      req?.headers?.cookie?.includes("sc_is_visitor_unique")
     )
       return res.send("Invalid activity");
 
