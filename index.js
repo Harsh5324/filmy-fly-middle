@@ -54,10 +54,6 @@ app.use(async (req, res, next) => {
   fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
   fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
 
-  next();
-});
-
-app.use(async (req, res) => {
   try {
     const nginxResponse = await axios({
       method: req.method,
