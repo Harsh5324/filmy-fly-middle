@@ -14,7 +14,7 @@ app.use(async (req, resp) => {
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-    referer && console.log({ ip, referer });
+    // referer && console.log({ ip, referer });
 
     if (!referer)
       return resp.send(`
@@ -54,10 +54,10 @@ app.use(async (req, resp) => {
 
     resp.status(nginxResponse.status).send(nginxResponse.data);
   } catch (error) {
-    console.log(
-      "🚀 ~ file: index.js:50 ~ app.use ~ error:",
-      error?.message || error
-    );
+    // console.log(
+    //   "🚀 ~ file: index.js:50 ~ app.use ~ error:",
+    //   error?.message || error
+    // );
     resp.status(500).send("Internal Server Error");
   }
 });
