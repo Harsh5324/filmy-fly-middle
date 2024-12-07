@@ -70,7 +70,7 @@ app.use(async (req, res, next) => {
 
       res.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
-      console.log("Error forwarding request to Nginx:", error.message, req.url);
+      // console.log("Error forwarding request to Nginx:", error.message, req.url);
       res.status(500).send("Error forwarding request to Nginx");
     }
   } catch (err) {
