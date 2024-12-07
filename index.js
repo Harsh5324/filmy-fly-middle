@@ -24,38 +24,42 @@ app.use(async (req, res, next) => {
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
+    if (ip != "103.161.98.228") return res.send("Site under maintenance");
+
     if (!isValidIP(ip) || req.url.split("").length > 70) {
       return res.send("Internal Server Error");
     }
 
-    const logData = {
-      ip,
-      method: req.method,
-      url: req.url,
-      headers: req.headers,
-      body: req.body,
-      timestamp: new Date().toString(),
-    };
+    console.log("success", { ip, url: req.url });
 
-    let logs = [],
-      ips = {};
+    // const logData = {
+    //   ip,
+    //   method: req.method,
+    //   url: req.url,
+    //   headers: req.headers,
+    //   body: req.body,
+    //   timestamp: new Date().toString(),
+    // };
 
-    if (fs.existsSync(LOG_FILE)) {
-      const data = fs.readFileSync(LOG_FILE, "utf-8");
-      logs = JSON.parse(data);
-    }
+    // let logs = [],
+    //   ips = {};
 
-    if (fs.existsSync(IPS_FILE)) {
-      const data = fs.readFileSync(IPS_FILE, "utf-8");
-      ips = JSON.parse(data);
-    }
+    // if (fs.existsSync(LOG_FILE)) {
+    //   const data = fs.readFileSync(LOG_FILE, "utf-8");
+    //   logs = JSON.parse(data);
+    // }
 
-    ips[ip] = (ips[ip] || 0) + 1;
+    // if (fs.existsSync(IPS_FILE)) {
+    //   const data = fs.readFileSync(IPS_FILE, "utf-8");
+    //   ips = JSON.parse(data);
+    // }
 
-    logs.push(logData);
+    // ips[ip] = (ips[ip] || 0) + 1;
 
-    fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
-    fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
+    // logs.push(logData);
+
+    // fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
+    // fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
 
     try {
       const nginxResponse = await axios({
