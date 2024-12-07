@@ -36,7 +36,7 @@ app.use(async (req, res, next) => {
     ];
 
     if (
-      req.url.lastIndexOf("cat-page") &&
+      req.url.includes("cat-page") &&
       !cats.includes(req.url.match(/\/cat-page\/(.*)\.html/)?.[1])
     )
       return res.send("Invalid activity");
