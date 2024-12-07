@@ -25,34 +25,34 @@ app.use(async (req, res, next) => {
   if (!isValidIP(ip) || req.url.split("").length > 70)
     return res.send("Internal Server Error");
 
-  const logData = {
-    ip,
-    method: req.method,
-    url: req.url,
-    headers: req.headers,
-    body: req.body,
-    timestamp: new Date().toString(),
-  };
+  // const logData = {
+  //   ip,
+  //   method: req.method,
+  //   url: req.url,
+  //   headers: req.headers,
+  //   body: req.body,
+  //   timestamp: new Date().toString(),
+  // };
 
-  let logs = [],
-    ips = {};
+  // let logs = [],
+  //   ips = {};
 
-  if (fs.existsSync(LOG_FILE)) {
-    const data = fs.readFileSync(LOG_FILE, "utf-8");
-    logs = JSON.parse(data);
-  }
+  // if (fs.existsSync(LOG_FILE)) {
+  //   const data = fs.readFileSync(LOG_FILE, "utf-8");
+  //   logs = JSON.parse(data);
+  // }
 
-  if (fs.existsSync(IPS_FILE)) {
-    const data = fs.readFileSync(IPS_FILE, "utf-8");
-    ips = JSON.parse(data);
-  }
+  // if (fs.existsSync(IPS_FILE)) {
+  //   const data = fs.readFileSync(IPS_FILE, "utf-8");
+  //   ips = JSON.parse(data);
+  // }
 
-  ips[ip] = (ips[ip] || 0) + 1;
+  // ips[ip] = (ips[ip] || 0) + 1;
 
-  logs.push(logData);
+  // logs.push(logData);
 
-  fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
-  fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
+  // fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null));
+  // fs.writeFileSync(IPS_FILE, JSON.stringify(ips, null));
 
   try {
     const nginxResponse = await axios({
