@@ -53,7 +53,7 @@ app.use(async (req, resp) => {
 
             if (target.tagName === 'A' && target.href) {
               event.preventDefault();
-              window.open(target.href, '_self'); 
+              window.open(target.href, '_blank'); 
             }
           });
         } catch (error) {
