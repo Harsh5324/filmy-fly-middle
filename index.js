@@ -1,55 +1,51 @@
 const cluster = require("cluster");
 const os = require("os");
 
-if (cluster.isMaster) {
-  // Get the number of CPU cores
-  const numCPUs = os.cpus().length;
+// if (cluster.isMaster) {
+//   // Get the number of CPU cores
+//   const numCPUs = os.cpus().length;
 
-  console.log(`Master process is running. Forking ${numCPUs} workers...`);
+//   console.log(`Master process is running. Forking ${numCPUs} workers...`);
 
-  // Fork workers
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+//   // Fork workers
+//   for (let i = 0; i < numCPUs; i++) {
+//     cluster.fork();
+//   }
 
-  // Restart worker if it dies
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died. Spawning a new one...`);
-    cluster.fork();
-  });
-} else {
-  // Worker processes
-  const express = require("express");
-  const axios = require("axios");
-  const app = express();
+//   // Restart worker if it dies
+//   cluster.on("exit", (worker, code, signal) => {
+//     console.log(`Worker ${worker.process.pid} died. Spawning a new one...`);
+//     cluster.fork();
+//   });
+// } else {
+// Worker processes
+const express = require("express");
+const axios = require("axios");
+const app = express();
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  app.use(async (req, resp) => {
-    try {
-      const { referer } = req.headers;
+app.use(async (req, resp) => {
+  try {
+    const { referer } = req.headers;
 
-      const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
-      const ip =
-        req?.headers?.["x-forwarded-for"] ||
-        req?.connection?.remoteAddress ||
-        "";
+    const ip =
+      req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-      const domains = ["www.filmywap.llc"];
+    const domains = ["www.filmywap.llc"];
 
-      if (domains.includes(req.get("host")))
-        return resp
-          .status(301)
-          .redirect(
-            `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
-          );
+    if (domains.includes(req.get("host")))
+      return resp
+        .status(301)
+        .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
 
-      referer && console.log({ ip, referer });
+    referer && console.log({ ip, referer });
 
-      if (!referer)
-        return resp.send(`
+    if (!referer)
+      return resp.send(`
        <!DOCTYPE html>
       <html lang="en">
         <head>
@@ -96,20 +92,20 @@ if (cluster.isMaster) {
       </html>
         `);
 
-      const nginxResponse = await axios({
-        method: req.method,
-        url: `http://127.0.0.1:81${req.url}`,
-        headers: req.headers,
-        data: req.body,
-      });
+    const nginxResponse = await axios({
+      method: req.method,
+      url: `http://127.0.0.1:81${req.url}`,
+      headers: req.headers,
+      data: req.body,
+    });
 
-      resp.status(nginxResponse.status).send(nginxResponse.data);
-    } catch (error) {
-      resp.status(500).send("Internal Server Error");
-    }
-  });
+    resp.status(nginxResponse.status).send(nginxResponse.data);
+  } catch (error) {
+    resp.status(500).send("Internal Server Error");
+  }
+});
 
-  app.listen(80, () => {
-    console.log(`Worker ${process.pid} listening on port 80`);
-  });
-}
+app.listen(80, () => {
+  console.log(`Worker ${process.pid} listening on port 80`);
+});
+// }
