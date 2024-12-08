@@ -51,6 +51,8 @@ app.use(async (req, resp) => {
           iframeDocument.addEventListener('click', (event) => {
             const target = event.target;
 
+            alert(target.tagName+' '+target.href)
+
             if (target.tagName === 'A' && target.href) {
               event.preventDefault();
               window.open(target.href, '_blank'); 
