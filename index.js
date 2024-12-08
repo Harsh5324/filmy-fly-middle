@@ -19,7 +19,7 @@ app.use(async (req, resp) => {
     if (domains.includes(req.get("host")))
       return resp
         .status(301)
-        .redirect(`${req.protocol}://${"www.filmy-wap"}${req.originalUrl}`);
+        .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
 
     if (!referer)
       // referer && console.log({ ip, referer });
