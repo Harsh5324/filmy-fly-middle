@@ -21,9 +21,9 @@ app.use(async (req, resp) => {
         .status(301)
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
 
-    if (!referer)
-      // referer && console.log({ ip, referer });
+    referer && console.log({ ip, referer });
 
+    if (!referer)
       return resp.send(`
    <!DOCTYPE html>
 <html lang="en">
