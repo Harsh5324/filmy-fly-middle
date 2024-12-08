@@ -52,7 +52,7 @@ app.use(async (req, resp) => {
           links.forEach((link) => {
             link.addEventListener('click', (event) => {
               event.preventDefault(); 
-              window.open(link.href, '_blank');
+              window.open(link.href, 'blank');
             });
           });
         } catch (error) {
