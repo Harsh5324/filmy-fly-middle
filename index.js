@@ -42,25 +42,30 @@ app.use(async (req, resp) => {
   <body>
     <iframe id="iframe" src="${fullUrl}"></iframe>
     <script>
-  const iframe = document.getElementById('iframe');
+      const iframe = document.getElementById('iframe');
 
-  iframe.addEventListener('load', () => {
-    try {
-      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      iframe.addEventListener('load', () => {
+        try {
+          const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
-      iframeDocument.addEventListener('click', (event) => {
-        const target = event.target;
+          iframeDocument.addEventListener('click', (event) => {
+            const target = event.target;
 
-        if (target.tagName === 'A' && target.href) {
-          event.preventDefault(); 
-          window.open(target.href, '_blank');
+            if (target.tagName === 'A' && target.href) {
+              const linkUrl = new URL(target.href); // Get the URL of the clicked link
+              const currentDomain = window.location.hostname; // Get the current domain
+
+              if (linkUrl.hostname !== currentDomain) {
+                event.preventDefault(); // Prevent the default navigation
+                window.open(target.href, '_blank'); // Open in a new tab
+              }
+            }
+          });
+        } catch (error) {
+          console.error('Cross-origin restriction:', error.message);
         }
       });
-    } catch (error) {
-      console.error('Cross-origin restriction:', error.message);
-    }
-  });
-</script>
+    </script>
   </body>
 </html>
     `);
