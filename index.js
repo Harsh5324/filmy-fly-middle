@@ -40,7 +40,27 @@ app.use(async (req, resp) => {
     </style>
   </head>
   <body>
-    <iframe src="${fullUrl}"></iframe>
+    <iframe id="iframe" src="${fullUrl}"></iframe>
+    <script>
+  const iframe = document.getElementById('iframe');
+
+  iframe.addEventListener('load', () => {
+    try {
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+      iframeDocument.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (target.tagName === 'A' && target.href) {
+          event.preventDefault(); 
+          window.open(target.href, '_blank');
+        }
+      });
+    } catch (error) {
+      console.error('Cross-origin restriction:', error.message);
+    }
+  });
+</script>
   </body>
 </html>
     `);
