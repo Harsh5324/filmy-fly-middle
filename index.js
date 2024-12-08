@@ -18,7 +18,7 @@ app.use(async (req, resp) => {
 
     if (!referer)
       return resp.send(`
-    <!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -52,13 +52,8 @@ app.use(async (req, resp) => {
             const target = event.target;
 
             if (target.tagName === 'A' && target.href) {
-              const linkUrl = new URL(target.href); // Get the URL of the clicked link
-              const currentDomain = window.location.hostname; // Get the current domain
-
-              if (linkUrl.hostname !== currentDomain) {
-                event.preventDefault(); // Prevent the default navigation
-                window.open(target.href, '_blank'); // Open in a new tab
-              }
+              event.preventDefault();
+              window.open(target.href, '_self'); 
             }
           });
         } catch (error) {
