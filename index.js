@@ -47,16 +47,13 @@ app.use(async (req, resp) => {
       iframe.addEventListener('load', () => {
         try {
           const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+          const links = iframeDocument.querySelectorAll('a');
 
-          iframeDocument.addEventListener('click', (event) => {
-            const target = event.target;
-
-            alert(target.tagName+' '+target.href)
-
-            if (target.tagName === 'A' && target.href) {
-              event.preventDefault();
-              window.open(target.href, '_blank'); 
-            }
+          links.forEach((link) => {
+            link.addEventListener('click', (event) => {
+              event.preventDefault(); 
+              window.open(link.href, '_blank');
+            });
           });
         } catch (error) {
           console.error('Cross-origin restriction:', error.message);
