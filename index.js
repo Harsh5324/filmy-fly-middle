@@ -14,9 +14,16 @@ app.use(async (req, resp) => {
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
 
-    // referer && console.log({ ip, referer });
+    const domains = ["www.filmywap.llc"];
+
+    if (domains.includes(req.get("host")))
+      return resp
+        .status(301)
+        .redirect(`${req.protocol}://${"www.filmy-wap"}${req.originalUrl}`);
 
     if (!referer)
+      // referer && console.log({ ip, referer });
+
       return resp.send(`
    <!DOCTYPE html>
 <html lang="en">
