@@ -40,7 +40,7 @@ app.use(async (req, resp) => {
     </style>
   </head>
   <body>
-    <iframe id="iframe" src="${fullUrl}" sandbox="allow-same-origin allow-scripts allow-popups allow-top-navigation"></iframe>
+    <iframe id="iframe" src="${fullUrl}"></iframe>
     <script>
       const iframe = document.getElementById('iframe');
 
