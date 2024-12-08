@@ -23,7 +23,7 @@ app.use(async (req, resp) => {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FilmyFly</title>
+    <title>${req.get("host")}</title>
     <style>
       * {
         margin: 0;
