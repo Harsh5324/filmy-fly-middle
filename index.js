@@ -32,6 +32,8 @@ if (cluster.isMaster) {
 
       const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
+      console.log({ ip, referer });
+
       const ip =
         req?.headers?.["x-forwarded-for"] ||
         req?.connection?.remoteAddress ||
@@ -45,8 +47,6 @@ if (cluster.isMaster) {
           .redirect(
             `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
           );
-
-      referer && console.log({ ip, referer });
 
       if (!referer)
         return resp.send(`
