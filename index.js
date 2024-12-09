@@ -32,12 +32,12 @@ if (cluster.isMaster) {
 
       const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
-      console.log({ ip, referer });
-
       const ip =
         req?.headers?.["x-forwarded-for"] ||
         req?.connection?.remoteAddress ||
         "";
+
+      console.log({ ip, referer });
 
       const domains = ["www.filmywap.llc"];
 
