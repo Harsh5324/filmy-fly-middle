@@ -37,8 +37,6 @@ if (cluster.isMaster) {
         req?.connection?.remoteAddress ||
         "";
 
-      console.log({ ip, referer });
-
       const domains = ["www.filmywap.llc"];
 
       if (domains.includes(req.get("host")))
@@ -95,6 +93,8 @@ if (cluster.isMaster) {
         </body>
       </html>
         `);
+
+      console.log({ ip, referer });
 
       const nginxResponse = await axios({
         method: req.method,
