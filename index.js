@@ -39,12 +39,12 @@ if (cluster.isMaster) {
 
       const domains = ["www.filmywap.llc"];
 
-      // if (domains.includes(req.get("host")))
-      //   return resp
-      //     .status(301)
-      //     .redirect(
-      //       `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
-      //     );
+      if (domains.includes(req.get("host")))
+        return resp
+          .status(301)
+          .redirect(
+            `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
+          );
 
       if (!referer)
         return resp.send(`
