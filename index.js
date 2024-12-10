@@ -105,10 +105,7 @@ if (cluster.isMaster) {
 
       const contentType = nginxResponse.headers["content-type"];
 
-      resp.setHeader(
-        "Content-Type",
-        req.url.includes(".css") ? "text/css" : contentType
-      );
+      resp.setHeader("Content-Type", "text/css");
 
       resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
