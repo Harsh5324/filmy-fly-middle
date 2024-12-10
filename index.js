@@ -103,7 +103,7 @@ if (cluster.isMaster) {
         data: req.body,
       });
 
-      const contentType = nginxResponse.headers["content-type"];
+      const contentType = nginxResponse?.headers?.["content-type"];
 
       console.log({ contentType, url: req.url });
 
