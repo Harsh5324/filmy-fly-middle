@@ -94,7 +94,7 @@ if (cluster.isMaster) {
       </html>
         `);
 
-      console.log({ ip, referer });
+      // console.log({ ip, referer });
 
       const nginxResponse = await axios({
         method: req.method,
@@ -105,7 +105,7 @@ if (cluster.isMaster) {
 
       const contentType = nginxResponse.headers["content-type"];
 
-      if (url.includes(".css")) console.log(contentType);
+      console.log({ contentType, url });
 
       resp.setHeader("Content-Type", contentType);
 
