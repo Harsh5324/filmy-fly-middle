@@ -103,14 +103,11 @@ if (cluster.isMaster) {
         data: req.body,
       });
 
-      resp
-        .status(nginxResponse.status)
-        .contentType(
-          req.url.includes(".css")
-            ? "text/css"
-            : nginxResponse.headers["content-type"]
-        )
-        .send(nginxResponse.data);
+      const contentType = nginxResponse.headers["content-type"];
+
+      resp.setHeader("Content-Type", contentType); // Set the same Content-Type
+
+      resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
       resp.status(500).send("Internal Server Error");
     }
