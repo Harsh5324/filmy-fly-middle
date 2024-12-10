@@ -46,6 +46,8 @@ if (cluster.isMaster) {
             `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
           );
 
+      console.log("--", { url: req.url });
+
       if (!referer)
         return resp.send(`
        <!DOCTYPE html>
