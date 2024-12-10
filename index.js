@@ -105,7 +105,7 @@ if (cluster.isMaster) {
 
       const contentType = nginxResponse.headers["content-type"];
 
-      console.log({ contentType, url });
+      console.log({ contentType, url: req.url });
 
       resp.setHeader("Content-Type", contentType);
 
