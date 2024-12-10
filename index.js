@@ -23,8 +23,8 @@ if (cluster.isMaster) {
   const axios = require("axios");
   const app = express();
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  // app.use(express.json());
+  // app.use(express.urlencoded({ extended: true }));
 
   app.use(async (req, resp) => {
     try {
@@ -45,8 +45,6 @@ if (cluster.isMaster) {
           .redirect(
             `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
           );
-
-      console.log("--", { url: req.url });
 
       if (!referer)
         return resp.send(`
