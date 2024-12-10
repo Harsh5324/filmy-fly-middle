@@ -96,6 +96,8 @@ if (cluster.isMaster) {
 
       // console.log({ ip, referer });
 
+      const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
+
       const nginxResponse = await axios({
         method: req.method,
         url: `http://127.0.0.1:81${req.url}`,
@@ -107,7 +109,10 @@ if (cluster.isMaster) {
 
       console.log({ contentType, url: req.url });
 
-      resp.setHeader("Content-Type", contentType);
+      resp.setHeader(
+        "Content-Type",
+        isCssFile(req.url) ? "text/css" : contentType
+      );
 
       resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
