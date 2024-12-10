@@ -103,8 +103,10 @@ if (cluster.isMaster) {
         data: req.body,
       });
 
-      // resp.status(nginxResponse.status).send(nginxResponse.data);
-      nginxResponse.pipe(resp);
+      resp
+        .status(nginxResponse.status)
+        .contentType(nginxResponse.headers["content-type"])
+        .send(nginxResponse.data);
     } catch (error) {
       resp.status(500).send("Internal Server Error");
     }
