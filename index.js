@@ -3,6 +3,7 @@ const os = require("os");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
+const ip = require("ip");
 
 const isValidIP = (ip) => {
   const ipv4Regex =
@@ -49,20 +50,17 @@ if (cluster.isMaster) {
 
   // Main proxy route
 
-  const limiter = rateLimit({
-    windowMs: 5 * 60 * 1000,
-    max: 100,
-    message: "Invalid activity",
-  });
+  app.use(
+    rateLimit({
+      windowMs: 5 * 60 * 1000,
+      max: 100,
+      message: "Invalid activity",
+    })
+  );
 
-  app.use(limiter);
-
-  const blockedIPPattern = /^::ffff:172\.\d+\.\d+\.\d+$/;
-
-  app.use((req, res, next) => {
-    if (blockedIPPattern.test(req.ip)) return res.send("Invalid activity");
-    next();
-  });
+  const ipv4 = req.ip.replace("::ffff:", "");
+  if (ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
+    return resp.send("Invalid activity");
 
   app.use(async (req, resp) => {
     try {
