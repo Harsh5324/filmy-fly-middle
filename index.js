@@ -47,24 +47,24 @@ if (cluster.isMaster) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use((req, res, next) => {
-    const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
+  // app.use((req, res, next) => {
+  //   const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
 
-    // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
-    const ipv4 = req.ip.startsWith("::ffff:")
-      ? req.ip.replace("::ffff:", "")
-      : req.ip;
+  //   // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
+  //   const ipv4 = req.ip.startsWith("::ffff:")
+  //     ? req.ip.replace("::ffff:", "")
+  //     : req.ip;
 
-    if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
+  //   if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
 
-    const isBlocked = blockedIps.some((range) =>
-      ip.cidrSubnet(range).contains(ipv4)
-    );
+  //   const isBlocked = blockedIps.some((range) =>
+  //     ip.cidrSubnet(range).contains(ipv4)
+  //   );
 
-    if (isBlocked) return res.send("Invalid activity:");
+  //   if (isBlocked) return res.send("Invalid activity:");
 
-    next();
-  });
+  //   next();
+  // });
 
   app.use(async (req, resp) => {
     try {
