@@ -3,6 +3,15 @@ const os = require("os");
 const express = require("express");
 const axios = require("axios");
 
+const isValidIP = (ip) => {
+  const ipv4Regex =
+    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])$/;
+  const ipv6Regex =
+    /^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,7}:$|^:(?::[a-fA-F0-9]{1,4}){1,7}$|^(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}$|^(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}$|^(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}$|^[a-fA-F0-9]{1,4}:((?::[a-fA-F0-9]{1,4}){1,6}|:)$|^(?::((:[a-fA-F0-9]{1,4}){1,7}|:))$/;
+
+  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
+};
+
 if (cluster.isMaster) {
   // Get the number of CPU cores
   const numCPUs = os.cpus().length;
@@ -60,7 +69,9 @@ if (cluster.isMaster) {
           );
       }
 
-      //s  console.log("Before", { url: fullUrl, host: req.headers.host });
+      //  console.log("Before", { url: fullUrl, host: req.headers.host });
+
+      if (!isValidIP(ip)) return resp.send("Invalid activity");
 
       if (!referer)
         return resp.send(`
