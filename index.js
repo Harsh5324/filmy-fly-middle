@@ -154,17 +154,17 @@ console.log("Cross-origin restriction:", error.message);
   }
 });
 
-setInterval(() => {
-  const memoryUsage = process.memoryUsage();
-  const memoryLimit = 500 * 1024 * 1024;
+// setInterval(() => {
+//   const memoryUsage = process.memoryUsage();
+//   const memoryLimit = 500 * 1024 * 1024;
 
-  if (memoryUsage.rss > memoryLimit) {
-    console.warn(
-      `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
-    );
-    process.exit(1);
-  }
-}, 60000);
+//   if (memoryUsage.rss > memoryLimit) {
+//     console.warn(
+//       `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
+//     );
+//     process.exit(1);
+//   }
+// }, 60000);
 
 app.listen(80);
 
