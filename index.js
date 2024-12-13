@@ -62,7 +62,7 @@ if (cluster.isMaster) {
           );
       }
 
-      console.log("Before", { url: fullUrl, host: req.headers.host });
+      //s  console.log("Before", { url: fullUrl, host: req.headers.host });
 
       if (!referer)
         return resp.send(`
