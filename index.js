@@ -120,8 +120,6 @@ console.error("Cross-origin restriction:", error.message);
 
       const contentType = nginxResponse?.headers?.["content-type"];
 
-      console.log("URI", { contentType, url: req.url });
-
       resp.setHeader(
         "Content-Type",
         isCssFile(req.url) ? "text/css" : contentType
