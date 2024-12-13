@@ -14,83 +14,79 @@ const isValidIP = (ip) => {
   return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 };
 
-if (cluster.isMaster) {
-  // Get the number of CPU cores
-  const numCPUs = os.cpus().length;
+// if (cluster.isMaster) {
+//   // Get the number of CPU cores
+//   const numCPUs = os.cpus().length;
 
-  console.log(`Master process is running. Forking ${numCPUs} workers...`);
+//   console.log(`Master process is running. Forking ${numCPUs} workers...`);
 
-  // Fork workers
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+//   // Fork workers
+//   for (let i = 0; i < numCPUs; i++) {
+//     cluster.fork();
+//   }
 
-  let respawnCount = 0;
-  const MAX_RESPAWNS = 25;
+//   let respawnCount = 0;
+//   const MAX_RESPAWNS = 25;
 
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(
-      `Worker ${worker.process.pid} died with code: ${code}, signal: ${signal}`
-    );
+//   cluster.on("exit", (worker, code, signal) => {
+//     console.log(
+//       `Worker ${worker.process.pid} died with code: ${code}, signal: ${signal}`
+//     );
 
-    if (respawnCount < MAX_RESPAWNS) {
-      console.log("Spawning a new worker...");
-      cluster.fork();
-      respawnCount++;
-    } else {
-      console.log("Max respawn attempts reached. Not spawning new workers.");
+//     if (respawnCount < MAX_RESPAWNS) {
+//       console.log("Spawning a new worker...");
+//       cluster.fork();
+//       respawnCount++;
+//     } else {
+//       console.log("Max respawn attempts reached. Not spawning new workers.");
+//     }
+//   });
+// } else {
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// app.use((req, res, next) => {
+//   const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
+
+//   // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
+//   const ipv4 = req.ip.startsWith("::ffff:")
+//     ? req.ip.replace("::ffff:", "")
+//     : req.ip;
+
+//   if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
+
+//   const isBlocked = blockedIps.some((range) =>
+//     ip.cidrSubnet(range).contains(ipv4)
+//   );
+
+//   if (isBlocked) return res.send("Invalid activity:");
+
+//   next();
+// });
+
+app.use(async (req, resp) => {
+  try {
+    const { referer } = req.headers;
+
+    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+
+    const ip =
+      req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
+
+    const domains = ["www.filmywap.llc"];
+
+    if (domains.includes(req.get("host"))) {
+      return resp
+        .status(301)
+        .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
-  });
-} else {
-  const app = express();
 
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+    // if (!isValidIP(ip)) return resp.send("Invalid activity");
 
-  // app.use((req, res, next) => {
-  //   const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
-
-  //   // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
-  //   const ipv4 = req.ip.startsWith("::ffff:")
-  //     ? req.ip.replace("::ffff:", "")
-  //     : req.ip;
-
-  //   if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
-
-  //   const isBlocked = blockedIps.some((range) =>
-  //     ip.cidrSubnet(range).contains(ipv4)
-  //   );
-
-  //   if (isBlocked) return res.send("Invalid activity:");
-
-  //   next();
-  // });
-
-  app.use(async (req, resp) => {
-    try {
-      const { referer } = req.headers;
-
-      const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-
-      const ip =
-        req?.headers?.["x-forwarded-for"] ||
-        req?.connection?.remoteAddress ||
-        "";
-
-      const domains = ["www.filmywap.llc"];
-
-      if (domains.includes(req.get("host"))) {
-        return resp
-          .status(301)
-          .redirect(
-            `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
-          );
-      }
-
-      // if (!isValidIP(ip)) return resp.send("Invalid activity");
-
-      if (!referer)
-        return resp.send(`
+    if (!referer)
+      return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,57 +128,57 @@ console.log("Cross-origin restriction:", error.message);
 </html>
       `);
 
-      console.log("After", { url: fullUrl, referer, ip });
+    console.log("After", { url: fullUrl, referer, ip });
 
-      const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
+    const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
 
-      const nginxResponse = await axios({
-        method: req.method,
-        url: `http://127.0.0.1:81${req.url}`,
-        headers: req.headers,
-        data: req.body,
-        timeout: 5000,
-      });
+    const nginxResponse = await axios({
+      method: req.method,
+      url: `http://127.0.0.1:81${req.url}`,
+      headers: req.headers,
+      data: req.body,
+      timeout: 5000,
+    });
 
-      const contentType = nginxResponse?.headers?.["content-type"];
+    const contentType = nginxResponse?.headers?.["content-type"];
 
-      resp.setHeader(
-        "Content-Type",
-        isCssFile(req.url) ? "text/css" : contentType
-      );
-
-      resp.status(nginxResponse.status).send(nginxResponse.data);
-    } catch (error) {
-      console.log("🚀 ~ file: index.js:131 ~ app.use ~ error:", error?.message);
-      resp.status(500).send("Internal Server Error");
-    }
-  });
-
-  setInterval(() => {
-    const memoryUsage = process.memoryUsage();
-    const memoryLimit = 500 * 1024 * 1024;
-
-    if (memoryUsage.rss > memoryLimit) {
-      console.warn(
-        `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
-      );
-      process.exit(1);
-    }
-  }, 60000);
-
-  app.listen(80);
-
-  process.on("uncaughtException", (err) => {
-    console.log(`Worker ${process.pid} encountered an error:`, err);
-    process.exit(1); // Graceful exit
-  });
-
-  process.on("unhandledRejection", (reason, promise) => {
-    console.log(
-      `Unhandled rejection in Worker ${process.pid}:`,
-      promise,
-      "Reason:",
-      reason
+    resp.setHeader(
+      "Content-Type",
+      isCssFile(req.url) ? "text/css" : contentType
     );
-  });
-}
+
+    resp.status(nginxResponse.status).send(nginxResponse.data);
+  } catch (error) {
+    console.log("🚀 ~ file: index.js:131 ~ app.use ~ error:", error?.message);
+    resp.status(500).send("Internal Server Error");
+  }
+});
+
+setInterval(() => {
+  const memoryUsage = process.memoryUsage();
+  const memoryLimit = 500 * 1024 * 1024;
+
+  if (memoryUsage.rss > memoryLimit) {
+    console.warn(
+      `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
+    );
+    process.exit(1);
+  }
+}, 60000);
+
+app.listen(80);
+
+process.on("uncaughtException", (err) => {
+  console.log(`Worker ${process.pid} encountered an error:`, err);
+  process.exit(1); // Graceful exit
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.log(
+    `Unhandled rejection in Worker ${process.pid}:`,
+    promise,
+    "Reason:",
+    reason
+  );
+});
+// }
