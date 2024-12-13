@@ -126,7 +126,7 @@ console.log("Cross-origin restriction:", error.message);
 
       resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
-      console.log("🚀 ~ file: index.js:131 ~ app.use ~ error:", error);
+      console.log("🚀 ~ file: index.js:131 ~ app.use ~ error:", error?.message);
       resp.status(500).send("Internal Server Error");
     }
   });
