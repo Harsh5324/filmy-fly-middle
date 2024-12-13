@@ -3,7 +3,7 @@ const os = require("os");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
-const _ip = require("ip");
+const ip = require("ip");
 
 const isValidIP = (ip) => {
   const ipv4Regex =
@@ -47,6 +47,23 @@ if (cluster.isMaster) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
+  app.use((req, res, next) => {
+    const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
+
+    // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
+    const ipv4 = req.ip.startsWith("::ffff:")
+      ? req.ip.replace("::ffff:", "")
+      : req.ip;
+
+    const isBlocked = blockedIps.some((range) =>
+      ip.cidrSubnet(range).contains(ipv4)
+    );
+
+    if (isBlocked) return res.send("Invalid activity:");
+
+    next();
+  });
+
   app.use(async (req, resp) => {
     try {
       const { referer } = req.headers;
@@ -69,13 +86,6 @@ if (cluster.isMaster) {
       }
 
       // if (!isValidIP(ip)) return resp.send("Invalid activity");
-
-      const ipv4 = req.ip.replace("::ffff:", "");
-
-      const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
-
-      if (blockedIps.find((range) => _ip.cidrSubnet(range).contains(ipv4)))
-        return resp.send("Invalid activity");
 
       if (!referer)
         return resp.send(`
