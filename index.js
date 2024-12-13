@@ -40,7 +40,7 @@ if (cluster.isMaster) {
   app.use(express.urlencoded({ extended: true }));
 
   // Main proxy route
-  app.use(async (req, res) => {
+  app.use(async (req, resp) => {
     try {
       const { referer } = req.headers;
 
@@ -55,7 +55,7 @@ if (cluster.isMaster) {
 
       // Redirect domain logic
       if (domains.includes(req.get("host"))) {
-        return res
+        return resp
           .status(301)
           .redirect(
             `${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`
@@ -64,7 +64,7 @@ if (cluster.isMaster) {
 
       // Return iframe if no referer
       if (!referer) {
-        return res.send(`
+        return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,19 +122,19 @@ console.error("Cross-origin restriction:", error.message);
 
       console.log("URI", { contentType, url: req.url });
 
-      res.setHeader(
+      resp.setHeader(
         "Content-Type",
         isCssFile(req.url) ? "text/css" : contentType
       );
 
-      res.status(nginxResponse.status).send(nginxResponse.data);
+      resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
       console.error("Proxy error:", error.message);
 
       if (error.code === "ECONNABORTED") {
-        res.status(504).send("Request Timeout");
+        resp.status(504).send("Request Timeout");
       } else {
-        res.status(500).send("Internal Server Error");
+        resp.status(500).send("Internal Server Error");
       }
     }
   });
