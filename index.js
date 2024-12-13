@@ -1,6 +1,7 @@
 const cluster = require("cluster");
 const os = require("os");
 const express = require("express");
+const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
 const isValidIP = (ip) => {
@@ -47,6 +48,15 @@ if (cluster.isMaster) {
   app.use(express.urlencoded({ extended: true }));
 
   // Main proxy route
+
+  const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 100,
+    message: "Invalid activity",
+  });
+
+  app.use(limiter);
+
   app.use(async (req, resp) => {
     try {
       const { referer } = req.headers;
