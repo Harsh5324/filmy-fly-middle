@@ -74,6 +74,8 @@ if (cluster.isMaster) {
 
       const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
 
+      console.log(ipv4);
+
       if (blockedIps.some((range) => _ip.cidrSubnet(range).contains(ipv4)))
         return resp.send("Invalid activity");
 
