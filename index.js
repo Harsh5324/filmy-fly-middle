@@ -60,7 +60,7 @@ if (cluster.isMaster) {
   const blockedIPPattern = /^::ffff:172\.\d+\.\d+\.\d+$/;
 
   app.use((req, res, next) => {
-    if (blockedIPPattern.test(req.ip)) return false;
+    if (blockedIPPattern.test(req.ip)) return res.send("Invalid activity");
     next();
   });
 
