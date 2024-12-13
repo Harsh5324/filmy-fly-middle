@@ -68,7 +68,7 @@ if (cluster.isMaster) {
           );
       }
 
-      if (!isValidIP(ip)) return resp.send("Invalid activity");
+      // if (!isValidIP(ip)) return resp.send("Invalid activity");
 
       const ipv4 = req.ip.replace("::ffff:", "");
 
