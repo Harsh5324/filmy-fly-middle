@@ -15,7 +15,7 @@ if (cluster.isMaster) {
   }
 
   let respawnCount = 0;
-  const MAX_RESPAWNS = 10;
+  const MAX_RESPAWNS = 100;
 
   // Restart worker if it dies
   cluster.on("exit", (worker, code, signal) => {
@@ -62,8 +62,9 @@ if (cluster.isMaster) {
           );
       }
 
-      // Return iframe if no referer
-      if (!referer) {
+      console.log("Before", { url: fullUrl, host: req.headers.host });
+
+      if (!referer)
         return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
@@ -105,9 +106,9 @@ console.error("Cross-origin restriction:", error.message);
 </body>
 </html>
       `);
-      }
 
-      // Proxy request to Nginx
+      console.log("After", { url: fullUrl, referer });
+
       const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
 
       const nginxResponse = await axios({
@@ -115,7 +116,7 @@ console.error("Cross-origin restriction:", error.message);
         url: `http://127.0.0.1:81${req.url}`,
         headers: req.headers,
         data: req.body,
-        timeout: 5000, // 5-second timeout
+        timeout: 5000,
       });
 
       const contentType = nginxResponse?.headers?.["content-type"];
@@ -137,25 +138,20 @@ console.error("Cross-origin restriction:", error.message);
     }
   });
 
-  // Monitor worker memory usage
   setInterval(() => {
     const memoryUsage = process.memoryUsage();
-    const memoryLimit = 500 * 1024 * 1024; // 500 MB
+    const memoryLimit = 500 * 1024 * 1024;
 
     if (memoryUsage.rss > memoryLimit) {
       console.warn(
         `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
       );
-      process.exit(1); // Graceful exit to trigger a respawn
+      process.exit(1);
     }
-  }, 60000); // Check every 60 seconds
+  }, 60000);
 
-  // Start the server
-  app.listen(80, () => {
-    console.log(`Worker ${process.pid} listening on port 80`);
-  });
+  app.listen(80);
 
-  // Handle uncaught exceptions
   process.on("uncaughtException", (err) => {
     console.error(`Worker ${process.pid} encountered an error:`, err);
     process.exit(1); // Graceful exit
