@@ -3,7 +3,7 @@ const os = require("os");
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
-const ip = require("ip");
+const _ip = require("ip");
 
 const isValidIP = (ip) => {
   const ipv4Regex =
@@ -85,7 +85,7 @@ if (cluster.isMaster) {
       if (!isValidIP(ip)) return resp.send("Invalid activity");
 
       const ipv4 = req.ip.replace("::ffff:", "");
-      if (ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
+      if (_ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
         return resp.send("Invalid activity");
 
       if (!referer)
