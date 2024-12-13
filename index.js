@@ -55,6 +55,8 @@ if (cluster.isMaster) {
       ? req.ip.replace("::ffff:", "")
       : req.ip;
 
+    if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
+
     const isBlocked = blockedIps.some((range) =>
       ip.cidrSubnet(range).contains(ipv4)
     );
