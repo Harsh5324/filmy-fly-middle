@@ -58,10 +58,6 @@ if (cluster.isMaster) {
     })
   );
 
-  const ipv4 = req.ip.replace("::ffff:", "");
-  if (ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
-    return resp.send("Invalid activity");
-
   app.use(async (req, resp) => {
     try {
       const { referer } = req.headers;
@@ -87,6 +83,10 @@ if (cluster.isMaster) {
       //  console.log("Before", { url: fullUrl, host: req.headers.host });
 
       if (!isValidIP(ip)) return resp.send("Invalid activity");
+
+      const ipv4 = req.ip.replace("::ffff:", "");
+      if (ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
+        return resp.send("Invalid activity");
 
       if (!referer)
         return resp.send(`
