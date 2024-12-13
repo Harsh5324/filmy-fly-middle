@@ -116,7 +116,7 @@ console.log("Cross-origin restriction:", error.message);
 </html>
       `);
 
-      console.log("After", { url: fullUrl, referer, ip });
+      console.log("After", { url: fullUrl, referer, ip: req.ip });
 
       const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
 
