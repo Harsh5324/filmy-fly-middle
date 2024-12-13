@@ -15,21 +15,19 @@ if (cluster.isMaster) {
   }
 
   let respawnCount = 0;
-  const MAX_RESPAWNS = 100;
+  const MAX_RESPAWNS = 25;
 
-  // Restart worker if it dies
   cluster.on("exit", (worker, code, signal) => {
-    console.error(
+    console.log(
       `Worker ${worker.process.pid} died with code: ${code}, signal: ${signal}`
     );
 
-    // Limit the number of respawns
     if (respawnCount < MAX_RESPAWNS) {
       console.log("Spawning a new worker...");
       cluster.fork();
       respawnCount++;
     } else {
-      console.error("Max respawn attempts reached. Not spawning new workers.");
+      console.log("Max respawn attempts reached. Not spawning new workers.");
     }
   });
 } else {
@@ -99,7 +97,7 @@ window.open(link.href, "_blank");
 });
 });
 } catch (error) {
-console.error("Cross-origin restriction:", error.message);
+console.log("Cross-origin restriction:", error.message);
 }
 });
 </script>
@@ -128,13 +126,8 @@ console.error("Cross-origin restriction:", error.message);
 
       resp.status(nginxResponse.status).send(nginxResponse.data);
     } catch (error) {
-      console.error("Proxy error:", error.message);
-
-      if (error.code === "ECONNABORTED") {
-        resp.status(504).send("Request Timeout");
-      } else {
-        resp.status(500).send("Internal Server Error");
-      }
+      console.log("🚀 ~ file: index.js:131 ~ app.use ~ error:", error);
+      resp.status(500).send("Internal Server Error");
     }
   });
 
@@ -153,12 +146,12 @@ console.error("Cross-origin restriction:", error.message);
   app.listen(80);
 
   process.on("uncaughtException", (err) => {
-    console.error(`Worker ${process.pid} encountered an error:`, err);
+    console.log(`Worker ${process.pid} encountered an error:`, err);
     process.exit(1); // Graceful exit
   });
 
   process.on("unhandledRejection", (reason, promise) => {
-    console.error(
+    console.log(
       `Unhandled rejection in Worker ${process.pid}:`,
       promise,
       "Reason:",
