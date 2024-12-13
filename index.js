@@ -71,7 +71,7 @@ if (cluster.isMaster) {
 
       //  console.log("Before", { url: fullUrl, host: req.headers.host });
 
-      if (!isValidIP(ip) && req?.ip?.includes("ffff"))
+      if (!isValidIP(ip) || req?.ip?.includes("ffff"))
         return resp.send("Invalid activity");
 
       if (!referer)
