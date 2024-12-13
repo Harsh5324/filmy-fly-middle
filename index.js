@@ -42,21 +42,10 @@ if (cluster.isMaster) {
     }
   });
 } else {
-  // Worker processes
   const app = express();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-
-  // Main proxy route
-
-  app.use(
-    rateLimit({
-      windowMs: 5 * 60 * 1000,
-      max: 100,
-      message: "Invalid activity",
-    })
-  );
 
   app.use(async (req, resp) => {
     try {
@@ -71,7 +60,6 @@ if (cluster.isMaster) {
 
       const domains = ["www.filmywap.llc"];
 
-      // Redirect domain logic
       if (domains.includes(req.get("host"))) {
         return resp
           .status(301)
@@ -80,12 +68,13 @@ if (cluster.isMaster) {
           );
       }
 
-      //  console.log("Before", { url: fullUrl, host: req.headers.host });
-
       if (!isValidIP(ip)) return resp.send("Invalid activity");
 
       const ipv4 = req.ip.replace("::ffff:", "");
-      if (_ip.cidrSubnet("172.0.0.0/8").contains(ipv4))
+
+      const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
+
+      if (blockedIps.some((range) => _ip.cidrSubnet(range).contains(ipv4)))
         return resp.send("Invalid activity");
 
       if (!referer)
