@@ -29,6 +29,12 @@ app.use(async (req, resp) => {
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
 
+    if (
+      req.headers["user-agent"] ==
+      "Dalvik/2.1.0 (Linux; U; Android 14; RMX3921 Build/UKQ1.231108.001)"
+    )
+      return resp.send("Invalid activity");
+
     if (!referer)
       return resp.send(`
         <!DOCTYPE html>
