@@ -34,10 +34,8 @@ app.use(async (req, resp) => {
       "https://worker-flat-morning-b653.wr87.workers.dev",
     ];
 
-    if (ip == "103.85.9.65") console.log(origin);
-
     if (
-      !origin ||
+      origin ||
       req.headers["user-agent"].includes("Dalvik") ||
       blockedorigins.includes(origin) ||
       req.url.includes(".html.html")
