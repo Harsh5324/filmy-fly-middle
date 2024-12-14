@@ -1,9 +1,5 @@
-const cluster = require("cluster");
-const os = require("os");
 const express = require("express");
-const rateLimit = require("express-rate-limit");
 const axios = require("axios");
-const ip = require("ip");
 
 const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
 
@@ -16,7 +12,12 @@ app.use(async (req, resp) => {
   try {
     const { referer, origin } = req.headers;
 
+    const userAgent = req.get("User-Agent") || "";
     const fullUrl = `${"https"}://${req.get("host")}${req.originalUrl}`;
+
+    const isGoogleBot = /Googlebot|AdsBot-Google|Mediapartners-Google/i.test(
+      userAgent
+    );
 
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
@@ -34,13 +35,10 @@ app.use(async (req, resp) => {
     //   "https://worker-flat-morning-b653.wr87.workers.dev",
     // ];
 
-    if (
-      req.headers["user-agent"].includes("Dalvik") ||
-      req.url.includes(".html.html")
-    )
+    if (userAgent.includes("Dalvik") || req.url.includes(".html.html"))
       return resp.send("Invalid activity");
 
-    if (!referer)
+    if (!referer && !isGoogleBot)
       return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
