@@ -5,45 +5,8 @@ const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 const ip = require("ip");
 
-const isValidIP = (ip) => {
-  const ipv4Regex =
-    /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]|[0-9])$/;
-  const ipv6Regex =
-    /^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,7}:$|^:(?::[a-fA-F0-9]{1,4}){1,7}$|^(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}$|^(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}$|^(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}$|^(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}$|^[a-fA-F0-9]{1,4}:((?::[a-fA-F0-9]{1,4}){1,6}|:)$|^(?::((:[a-fA-F0-9]{1,4}){1,7}|:))$/;
-
-  return ipv4Regex.test(ip) || ipv6Regex.test(ip);
-};
-
 const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
 
-// if (cluster.isMaster) {
-//   // Get the number of CPU cores
-//   const numCPUs = os.cpus().length;
-
-//   console.log(`Master process is running. Forking ${numCPUs} workers...`);
-
-//   // Fork workers
-//   for (let i = 0; i < numCPUs; i++) {
-//     cluster.fork();
-//   }
-
-//   let respawnCount = 0;
-//   const MAX_RESPAWNS = 25;
-
-//   cluster.on("exit", (worker, code, signal) => {
-//     console.log(
-//       `Worker ${worker.process.pid} died with code: ${code}, signal: ${signal}`
-//     );
-
-//     if (respawnCount < MAX_RESPAWNS) {
-//       console.log("Spawning a new worker...");
-//       cluster.fork();
-//       respawnCount++;
-//     } else {
-//       console.log("Max respawn attempts reached. Not spawning new workers.");
-//     }
-//   });
-// } else {
 const app = express();
 
 app.use(express.json());
@@ -156,4 +119,3 @@ process.on("unhandledRejection", (reason, promise) => {
     reason
   );
 });
-// }
