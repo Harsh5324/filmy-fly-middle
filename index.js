@@ -23,7 +23,7 @@ app.use(async (req, resp) => {
 
     const domains = ["www.filmywap.llc"];
 
-    if (domains.includes(req.get("host"))) {
+    if (!origin || domains.includes(req.get("host"))) {
       return resp
         .status(301)
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
