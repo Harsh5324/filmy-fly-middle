@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(async (req, resp) => {
   try {
-    const { referer } = req.headers;
+    const { referer, origin } = req.headers;
 
     const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
 
@@ -29,9 +29,12 @@ app.use(async (req, resp) => {
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
 
-    // if (!isValidIP(ip)) return resp.send("Invalid activity");
+    if (origin == "https://botdrivea.filesdl.in")
+      return resp.send("Invalid activity");
 
     if (!referer)
+      // if (!isValidIP(ip)) return resp.send("Invalid activity");
+
       return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
