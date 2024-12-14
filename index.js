@@ -14,6 +14,8 @@ const isValidIP = (ip) => {
   return ipv4Regex.test(ip) || ipv6Regex.test(ip);
 };
 
+const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
+
 // if (cluster.isMaster) {
 //   // Get the number of CPU cores
 //   const numCPUs = os.cpus().length;
@@ -46,25 +48,6 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// app.use((req, res, next) => {
-//   const blockedIps = ["172.0.0.0/8", "162.0.0.0/8", "141.0.0.0/8"];
-
-//   // Convert IPv6-mapped IPv4 (e.g., "::ffff:103.81.93.79") to IPv4 format
-//   const ipv4 = req.ip.startsWith("::ffff:")
-//     ? req.ip.replace("::ffff:", "")
-//     : req.ip;
-
-//   if (req.headers["x-forwarded-for"] == "103.81.93.79") console.log(ipv4);
-
-//   const isBlocked = blockedIps.some((range) =>
-//     ip.cidrSubnet(range).contains(ipv4)
-//   );
-
-//   if (isBlocked) return res.send("Invalid activity:");
-
-//   next();
-// });
 
 app.use(async (req, resp) => {
   try {
@@ -128,9 +111,13 @@ console.log("Cross-origin restriction:", error.message);
 </html>
       `);
 
-    console.log("After", { url: fullUrl, referer, ip });
-
-    const isCssFile = (url) => url.trim().toLowerCase().endsWith(".css");
+    console.log("After", {
+      url: fullUrl,
+      referer,
+      ip,
+      origin: req.headers.origin,
+      userAgent: req.headers["user-agent"],
+    });
 
     const nginxResponse = await axios({
       method: req.method,
@@ -153,18 +140,6 @@ console.log("Cross-origin restriction:", error.message);
     resp.status(500).send("Internal Server Error");
   }
 });
-
-// setInterval(() => {
-//   const memoryUsage = process.memoryUsage();
-//   const memoryLimit = 500 * 1024 * 1024;
-
-//   if (memoryUsage.rss > memoryLimit) {
-//     console.warn(
-//       `Worker ${process.pid} exceeding memory limit: ${memoryUsage.rss}`
-//     );
-//     process.exit(1);
-//   }
-// }, 60000);
 
 app.listen(80);
 
