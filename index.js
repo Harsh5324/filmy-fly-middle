@@ -29,15 +29,14 @@ app.use(async (req, resp) => {
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
 
-    const blockedorigins = [
-      "https://botdrivea.filesdl.in",
-      "https://worker-flat-morning-b653.wr87.workers.dev",
-    ];
+    // const blockedorigins = [
+    //   "https://botdrivea.filesdl.in",
+    //   "https://worker-flat-morning-b653.wr87.workers.dev",
+    // ];
 
     if (
       origin ||
       req.headers["user-agent"].includes("Dalvik") ||
-      blockedorigins.includes(origin) ||
       req.url.includes(".html.html")
     )
       return resp.send("Invalid activity");
@@ -56,9 +55,12 @@ iframe { width: 100%; height: 100vh; border: none; outline: none; }
 </style>
 </head>
 <body>
-<iframe id="iframe" src="${fullUrl}"></iframe>
+<iframe id="iframe"></iframe>
 <script>
 const iframe = document.getElementById("iframe");
+window.onload = () => {
+  iframe.src = "${fullUrl}"
+}
 iframe.addEventListener("load", () => {
 try {
 const iframeDocument =
