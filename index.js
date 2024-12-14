@@ -16,7 +16,7 @@ app.use(async (req, resp) => {
   try {
     const { referer, origin } = req.headers;
 
-    const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+    const fullUrl = `${"https"}://${req.get("host")}${req.originalUrl}`;
 
     const ip =
       req?.headers?.["x-forwarded-for"] || req?.connection?.remoteAddress || "";
