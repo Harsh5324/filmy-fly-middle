@@ -59,7 +59,9 @@ iframe { width: 100%; height: 100vh; border: none; outline: none; }
 <script>
 const iframe = document.getElementById("iframe");
 window.onload = () => {
-  iframe.src = "${fullUrl}"
+  setTimeout(() => {
+    iframe.src = "${fullUrl}"
+  },2000)
 }
 iframe.addEventListener("load", () => {
 try {
