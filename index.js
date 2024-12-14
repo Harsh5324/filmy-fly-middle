@@ -29,7 +29,7 @@ app.use(async (req, resp) => {
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
 
-    if (origin == "https://botdrivea.filesdl.in")
+    if (!origin || origin == "https://botdrivea.filesdl.in")
       return resp.send("Invalid activity");
 
     if (!referer)
