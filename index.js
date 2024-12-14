@@ -23,15 +23,22 @@ app.use(async (req, resp) => {
 
     const domains = ["www.filmywap.llc"];
 
-    if (!origin || domains.includes(req.get("host"))) {
+    if (domains.includes(req.get("host"))) {
       return resp
         .status(301)
         .redirect(`${req.protocol}://${"www.filmy-wap.in"}${req.originalUrl}`);
     }
 
+    const blockedorigins = [
+      "https://botdrivea.filesdl.in",
+      "https://worker-flat-morning-b653.wr87.workers.dev",
+    ];
+
     if (
       req.headers["user-agent"] ==
-      "Dalvik/2.1.0 (Linux; U; Android 14; RMX3921 Build/UKQ1.231108.001)"
+        "Dalvik/2.1.0 (Linux; U; Android 14; RMX3921 Build/UKQ1.231108.001)" ||
+      !origin ||
+      blockedorigins.includes(origin)
     )
       return resp.send("Invalid activity");
 
