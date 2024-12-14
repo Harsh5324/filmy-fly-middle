@@ -61,7 +61,7 @@ const iframe = document.getElementById("iframe");
 window.onload = () => {
   setTimeout(() => {
     iframe.src = "${fullUrl}"
-  },2000)
+  },500)
 }
 iframe.addEventListener("load", () => {
 try {
