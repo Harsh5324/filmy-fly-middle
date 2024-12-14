@@ -30,8 +30,6 @@ app.use(async (req, resp) => {
     }
 
     if (!referer)
-      // if (!isValidIP(ip)) return resp.send("Invalid activity");
-
       return resp.send(`
         <!DOCTYPE html>
 <html lang="en">
