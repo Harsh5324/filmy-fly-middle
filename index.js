@@ -35,6 +35,7 @@ app.use(async (req, resp) => {
     ];
 
     if (
+      !origin ||
       req.headers["user-agent"].includes("Dalvik") ||
       blockedorigins.includes(origin) ||
       req.url.includes(".html.html")
