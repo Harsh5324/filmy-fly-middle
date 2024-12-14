@@ -36,7 +36,8 @@ app.use(async (req, resp) => {
 
     if (
       req.headers["user-agent"].includes("Dalvik") ||
-      blockedorigins.includes(origin)
+      blockedorigins.includes(origin) ||
+      req.url.includes(".html.html")
     )
       return resp.send("Invalid activity");
 
