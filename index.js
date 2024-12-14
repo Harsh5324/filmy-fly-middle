@@ -37,7 +37,6 @@ app.use(async (req, resp) => {
     if (
       req.headers["user-agent"] ==
         "Dalvik/2.1.0 (Linux; U; Android 14; RMX3921 Build/UKQ1.231108.001)" ||
-      !origin ||
       blockedorigins.includes(origin)
     )
       return resp.send("Invalid activity");
